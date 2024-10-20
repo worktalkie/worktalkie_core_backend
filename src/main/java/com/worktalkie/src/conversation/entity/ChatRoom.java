@@ -19,13 +19,14 @@ public class ChatRoom extends BaseEntity {
 
     @Id
     private String id;
-    private String scenarioId;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Scenario scenario;
     private String userId;
 
-    public static ChatRoom of(String userId, String scenarioId) {
+    public static ChatRoom of(String userId, Scenario scenario) {
         return ChatRoom.builder()
                 .id(String.valueOf(UUID.randomUUID()))
-                .scenarioId(scenarioId)
+                .scenario(scenario)
                 .userId(userId)
                 .build();
     }

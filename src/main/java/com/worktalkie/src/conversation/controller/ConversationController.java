@@ -18,7 +18,7 @@ public class ConversationController {
 
     @PostMapping("")
     public ResponseEntity<Object> startConversation(@RequestBody ConversationRequestDto.CreateDto input,
-                                                    @RequestPart(value = "audio")MultipartFile audio) {
+                                                    @RequestPart(value = "audio") MultipartFile audio) {
         Object result = conversationService.startConversation(input, audio);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
@@ -26,8 +26,9 @@ public class ConversationController {
     @PostMapping("/{sessionId}/message")
     public ResponseEntity<ConversationResponseDto.ChatDto> chat(
             @PathVariable String sessionId,
-            @RequestBody ConversationRequestDto.ChatDto input) {
-        ConversationResponseDto.ChatDto response = conversationService.chat(sessionId, input);
+            @RequestBody ConversationRequestDto.ChatDto input,
+            @RequestPart(value = "audio") MultipartFile audio) {
+        ConversationResponseDto.ChatDto response = conversationService.chat(sessionId, input, audio);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
