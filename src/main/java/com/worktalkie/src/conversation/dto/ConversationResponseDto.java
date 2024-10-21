@@ -4,13 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 public class ConversationResponseDto {
 
     @Getter
     @Builder
-    public class StartDto {
+    public static class StartDto {
         private String conversationId;
         private String answer;
     }

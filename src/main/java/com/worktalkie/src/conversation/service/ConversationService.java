@@ -56,8 +56,9 @@ public class ConversationService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         HttpEntity<GptRequestDto> requestEntity = new HttpEntity<>(gptInput, headers);
+        String startConversationUrl = ML_SERVER + "/start";
 
-        ResponseEntity<Object> response = restTemplate.exchange(ML_SERVER, HttpMethod.POST, requestEntity, Object.class);
+        ResponseEntity<Object> response = restTemplate.exchange(startConversationUrl, HttpMethod.POST, requestEntity, Object.class);
 
         Object mlResponse = response.getBody();
         if (mlResponse == null) {
@@ -90,8 +91,9 @@ public class ConversationService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         HttpEntity<ScenarioResponseDto.GetByIdDto> requestEntity = new HttpEntity<>(scenarioDto, headers);
+        String chatUrl = ML_SERVER + "/chat";
 
-        ResponseEntity<Object> response = restTemplate.exchange(ML_SERVER, HttpMethod.POST, requestEntity, Object.class);
+        ResponseEntity<Object> response = restTemplate.exchange(chatUrl, HttpMethod.POST, requestEntity, Object.class);
         Object mlResponse = response.getBody();
         if (mlResponse == null) {
             throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -120,11 +122,33 @@ public class ConversationService {
                 .build();
     }
 
-    public ConversationResponseDto.EndDto endConversation(final String sessionId) {
+    public ConversationResponseDto.EndDto endConversation(final String chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+        Scenario scenario = chatRoom.getScenario();
+        List<Mission> missions = scenarioService.getMissionsByScenarioId(scenario.getId());
+        List<Chat> chats = chatRepository.findByChatRoom(chatRoom);
+
+        GptRequestDto gptInput = GptRequestDto.createEndConversationDto(scenario, missions, List.of(false, false, false), chats);
+        // ML 서버 API 호출
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        HttpEntity<GptRequestDto> requestEntity = new HttpEntity<>(gptInput, headers);
+        String chatUrl = ML_SERVER + "/endConversation";
+
+        ResponseEntity<Object> response = restTemplate.exchange(chatUrl, HttpMethod.POST, requestEntity, Object.class);
+
+        Object mlResponse = response.getBody();
+        if (mlResponse == null) {
+            throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
         return new ConversationResponseDto.EndDto();
     }
 
-    public List<ConversationResponseDto.HistoryDto> getChatHistory(final String sessionId) {
+    public List<ConversationResponseDto.HistoryDto> getChatHistory(final String chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+        List<Chat> chats = chatRepository.findByChatRoom(chatRoom);
+
         return null;
     }
 }
