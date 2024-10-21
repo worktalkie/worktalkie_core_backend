@@ -1,5 +1,6 @@
 package com.worktalkie.src.conversation.entity;
 
+import com.worktalkie.src.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import lombok.*;
 @Entity
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Chat {
+public class Chat extends BaseEntity {
 
     @Id
     private String id;

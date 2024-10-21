@@ -3,6 +3,7 @@ package com.worktalkie.src.conversation.service;
 import com.worktalkie.src.conversation.dto.ConversationRequestDto;
 import com.worktalkie.src.conversation.dto.ConversationResponseDto;
 import com.worktalkie.src.conversation.dto.GptRequestDto;
+import com.worktalkie.src.conversation.entity.Chat;
 import com.worktalkie.src.conversation.entity.ChatRoom;
 import com.worktalkie.src.conversation.repository.ChatRepository;
 import com.worktalkie.src.conversation.repository.ChatRoomRepository;
@@ -56,8 +57,7 @@ public class ConversationService {
         headers.set("Content-Type", "application/json");
         HttpEntity<GptRequestDto> requestEntity = new HttpEntity<>(gptInput, headers);
 
-        ResponseEntity<Object> response;
-        response = restTemplate.exchange(ML_SERVER, HttpMethod.POST, requestEntity, Object.class);
+        ResponseEntity<Object> response = restTemplate.exchange(ML_SERVER, HttpMethod.POST, requestEntity, Object.class);
 
         Object mlResponse = response.getBody();
         if (mlResponse == null) {
@@ -76,6 +76,7 @@ public class ConversationService {
                 .build();
     }
 
+    @Transactional
     public ConversationResponseDto.ChatDto chat(final String chatRoomId,
                                                 final ConversationRequestDto.ChatDto input,
                                                 MultipartFile audio) {
@@ -90,12 +91,33 @@ public class ConversationService {
         headers.set("Content-Type", "application/json");
         HttpEntity<ScenarioResponseDto.GetByIdDto> requestEntity = new HttpEntity<>(scenarioDto, headers);
 
-        ResponseEntity<Object> response;
-        response = restTemplate.exchange(ML_SERVER, HttpMethod.POST, requestEntity, Object.class);
+        ResponseEntity<Object> response = restTemplate.exchange(ML_SERVER, HttpMethod.POST, requestEntity, Object.class);
+        Object mlResponse = response.getBody();
+        if (mlResponse == null) {
+            throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+        Chat memberChat = Chat.builder()
+                .chatRoom(chatRoom)
+                .message(input.getMessage())
+                .isAi(false)
+                .build();
+        chatRepository.save(memberChat);
+
+        Chat gptChat = Chat.builder()
+                .chatRoom(chatRoom)
+                .message(mlResponse.toString())
+                .isAi(true)
+                .build();
+        chatRepository.save(gptChat);
 
         storageService.storeAudio(chatRoomId, audio);
 
-        return null;
+        return ConversationResponseDto.ChatDto.builder()
+                .message(mlResponse.toString())
+                .isAi(true)
+                .createdAt(gptChat.getCreatedAt())
+                .build();
     }
 
     public ConversationResponseDto.EndDto endConversation(final String sessionId) {
