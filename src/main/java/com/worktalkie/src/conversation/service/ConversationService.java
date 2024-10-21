@@ -8,6 +8,8 @@ import com.worktalkie.src.conversation.entity.ChatRoom;
 import com.worktalkie.src.conversation.repository.ChatRepository;
 import com.worktalkie.src.conversation.repository.ChatRoomRepository;
 import com.worktalkie.src.conversation.repository.ConversationRepository;
+import com.worktalkie.src.global.code.HeaderType;
+import com.worktalkie.src.global.code.HeaderValue;
 import com.worktalkie.src.global.error.BaseException;
 import com.worktalkie.src.global.error.ErrorCode;
 import com.worktalkie.src.scenario.ScenarioService;
@@ -54,7 +56,7 @@ public class ConversationService {
 
         // ML 서버 API 호출
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
+        headers.set(HeaderType.CONTENT_TYPE.name(), HeaderValue.APPLICATION_JSON.name());
         HttpEntity<GptRequestDto> requestEntity = new HttpEntity<>(gptInput, headers);
         String startConversationUrl = ML_SERVER + "/start";
 
@@ -89,7 +91,7 @@ public class ConversationService {
 
         // ML 서버 API 호출
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
+        headers.set(HeaderType.CONTENT_TYPE.name(), HeaderValue.APPLICATION_JSON.name());
         HttpEntity<ScenarioResponseDto.GetByIdDto> requestEntity = new HttpEntity<>(scenarioDto, headers);
         String chatUrl = ML_SERVER + "/chat";
 
@@ -131,7 +133,7 @@ public class ConversationService {
         GptRequestDto gptInput = GptRequestDto.createEndConversationDto(scenario, missions, List.of(false, false, false), chats);
         // ML 서버 API 호출
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
+        headers.set(HeaderType.CONTENT_TYPE.name(), HeaderValue.APPLICATION_JSON.name());
         HttpEntity<GptRequestDto> requestEntity = new HttpEntity<>(gptInput, headers);
         String chatUrl = ML_SERVER + "/endConversation";
 
