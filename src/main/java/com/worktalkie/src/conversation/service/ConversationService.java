@@ -151,6 +151,7 @@ public class ConversationService {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
         List<Chat> chats = chatRepository.findByChatRoom(chatRoom);
 
+
         return null;
     }
 }
