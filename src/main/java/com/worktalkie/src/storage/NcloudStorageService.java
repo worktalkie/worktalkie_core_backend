@@ -1,5 +1,6 @@
 package com.worktalkie.src.storage;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,18 +21,33 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @Service
 public class NcloudStorageService implements StorageService {
-    private final String endPoint = "1234";
-    private final String regionName = "1";
-    private final String accessKey = "ACCESS_KEY";
-    private final String secretKey = "SECRET_KEY";
-    private final S3Client s3 = S3Client.builder()
-            .endpointOverride(URI.create(endPoint))
-            .region(Region.of(regionName))
-            .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
-            .build();
+    @Value("${cloud.ncloud.endpoint}")
+    private String endPoint;
+
+    @Value("${cloud.ncloud.region}")
+    private String regionName;
+
+    @Value("${cloud.ncloud.access-key}")
+    private String accessKey;
+
+    @Value("${cloud.ncloud.secret-key}")
+    private String secretKey;
 
     @Value("${cloud.ncloud.bucket}")
     private String bucketName;
+
+    private S3Client s3;
+
+    @PostConstruct
+    public void init() {
+        this.s3 = S3Client.builder()
+                .endpointOverride(URI.create(endPoint))
+                .region(Region.of(regionName))
+                .credentialsProvider(StaticCredentialsProvider.create(
+                        AwsBasicCredentials.create(accessKey, secretKey)
+                ))
+                .build();
+    }
 
     @Override
     public List<Bucket> getBuckets() {
@@ -39,23 +55,17 @@ public class NcloudStorageService implements StorageService {
     }
 
     @Override
-    public void uploadFile(String folderName, MultipartFile file) throws IOException {
+    public void uploadFile(String chatRoomId, MultipartFile file) throws IOException {
+        String folderPath = "audio/" + chatRoomId;
+        String filePath = folderPath + "_" + file.getOriginalFilename();
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
-                .key(folderName)  // S3 key acts as a "folder" name
-                .contentType("application/x-directory")  // Content type for folder
+                .key(filePath)
+                .contentType(file.getContentType())
                 .build();
-        try {
-            s3.putObject(putObjectRequest, RequestBody.fromBytes(new byte[0]));
-            log.info("Successfully created folder: {}", folderName);
-        } catch (S3Exception e) {
-            log.error(e.awsErrorDetails().errorMessage());
-        }
-    }
 
-    @Override
-    public void storeAudio(String chatRoomId, MultipartFile audio) {
-
+        log.info("Uploading file: {}", filePath);
+        s3.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
     }
 
     @Override

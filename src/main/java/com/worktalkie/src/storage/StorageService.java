@@ -13,7 +13,5 @@ public interface StorageService {
 
     void uploadFile(String folderName, MultipartFile file) throws IOException;
 
-    void storeAudio(String chatRoomId, MultipartFile audio);
-
     List<String> getFileList(String bucketName);
 }

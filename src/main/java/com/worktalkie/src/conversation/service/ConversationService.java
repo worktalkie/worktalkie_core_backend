@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -42,11 +43,11 @@ public class ConversationService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${ml.server}")
+    @Value("${ml-server.url}")
     private String ML_SERVER;
 
     @Transactional
-    public ConversationResponseDto.StartDto startConversation(final ConversationRequestDto.CreateDto input, MultipartFile audio) {
+    public ConversationResponseDto.StartDto startConversation(final ConversationRequestDto.CreateDto input) {
         // 시나리오 호출
         Scenario scenario = scenarioService.getScenarioById(input.getScenarioId());
         List<Mission> missions = scenarioService.getMissionsByScenarioId(scenario.getId());
@@ -71,8 +72,6 @@ public class ConversationService {
         conversationRepository.save(chatRoom);
         String chatRoomId = chatRoom.getId();
 
-        storageService.storeAudio(chatRoomId, audio);
-
         return ConversationResponseDto.StartDto.builder()
                 .conversationId(chatRoomId)
                 .answer(mlResponse.toString())
@@ -82,7 +81,7 @@ public class ConversationService {
     @Transactional
     public ConversationResponseDto.ChatDto chat(final String chatRoomId,
                                                 final ConversationRequestDto.ChatDto input,
-                                                MultipartFile audio) {
+                                                MultipartFile audio) throws IOException {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
         Scenario scenario = chatRoom.getScenario();
         List<Mission> missions = scenarioService.getMissionsByScenarioId(scenario.getId());
@@ -101,6 +100,7 @@ public class ConversationService {
             throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
 
+        // TODO: 코드 중복 제거
         Chat memberChat = Chat.builder()
                 .chatRoom(chatRoom)
                 .message(input.getMessage())
@@ -115,7 +115,7 @@ public class ConversationService {
                 .build();
         chatRepository.save(gptChat);
 
-        storageService.storeAudio(chatRoomId, audio);
+        storageService.uploadFile(chatRoomId, audio);
 
         return ConversationResponseDto.ChatDto.builder()
                 .message(mlResponse.toString())
@@ -150,7 +150,6 @@ public class ConversationService {
     public List<ConversationResponseDto.HistoryDto> getChatHistory(final String chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
         List<Chat> chats = chatRepository.findByChatRoom(chatRoom);
-
 
         return null;
     }
