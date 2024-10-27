@@ -1,4 +1,4 @@
-package com.worktalkie.src.storage;
+package com.worktalkie.src.global.storage;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;

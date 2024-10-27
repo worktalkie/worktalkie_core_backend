@@ -3,7 +3,6 @@ package com.worktalkie.src.conversation.controller;
 import com.worktalkie.src.conversation.service.ConversationService;
 import com.worktalkie.src.conversation.dto.ConversationRequestDto;
 import com.worktalkie.src.conversation.dto.ConversationResponseDto;
-import com.worktalkie.src.storage.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConversationController {
     private final ConversationService conversationService;
-    private final StorageService storageService;
 
     @PostMapping("")
     public ResponseEntity<Object> startConversation(@RequestBody ConversationRequestDto.CreateDto input) {
@@ -46,9 +44,4 @@ public class ConversationController {
         List<ConversationResponseDto.HistoryDto> history = conversationService.getChatHistory(chatRoomId);
         return new ResponseEntity<>(history, HttpStatus.OK);
     }
-
-//    @GetMapping("/{chatRoomId}/audio-history")
-//    public Object getAudioHistory(@PathVariable String chatRoomId) throws IOException {
-//        return storageService.getAudioHistory(chatRoomId);
-//    }
 }

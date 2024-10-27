@@ -1,5 +1,6 @@
-package com.worktalkie.src.scenario;
+package com.worktalkie.src.scenario.controller;
 
+import com.worktalkie.src.scenario.service.ScenarioService;
 import com.worktalkie.src.scenario.dto.ScenarioResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

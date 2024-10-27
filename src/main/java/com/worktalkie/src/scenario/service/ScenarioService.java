@@ -1,4 +1,4 @@
-package com.worktalkie.src.scenario;
+package com.worktalkie.src.scenario.service;
 
 import com.worktalkie.src.global.error.BaseException;
 import com.worktalkie.src.global.error.ErrorCode;

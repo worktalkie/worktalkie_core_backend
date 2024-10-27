@@ -1,4 +1,4 @@
-package com.worktalkie.src.storage;
+package com.worktalkie.src.global.storage;
 
 
 import org.springframework.web.multipart.MultipartFile;
