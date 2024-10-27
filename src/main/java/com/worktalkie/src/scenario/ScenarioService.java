@@ -41,4 +41,14 @@ public class ScenarioService {
         return missionRepository.findAllByScenarioId(scenarioId);
     }
 
+    public List<ScenarioResponseDto.GetByIdDto> getScenarios() {
+        List<String> scenarioIds = scenarioRepository.findAll()
+                .stream()
+                .map(Scenario::getId)
+                .toList();
+
+        return scenarioIds.stream()
+                .map(this::getScenarioDtoById)
+                .toList();
+    }
 }
