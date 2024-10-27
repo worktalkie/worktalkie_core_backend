@@ -1,6 +1,7 @@
 package com.worktalkie.src.conversation.entity;
 
 import com.worktalkie.src.global.BaseEntity;
+import com.worktalkie.src.member.entity.Member;
 import com.worktalkie.src.scenario.entity.Scenario;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,13 +22,14 @@ public class ChatRoom extends BaseEntity {
     private String id;
     @OneToOne(fetch = FetchType.LAZY)
     private Scenario scenario;
-    private String userId;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Member member;
 
-    public static ChatRoom of(String userId, Scenario scenario) {
+    public static ChatRoom of(Member member, Scenario scenario) {
         return ChatRoom.builder()
                 .id(String.valueOf(UUID.randomUUID()))
                 .scenario(scenario)
-                .userId(userId)
+                .member(member)
                 .build();
     }
 }

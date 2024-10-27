@@ -12,6 +12,8 @@ import com.worktalkie.src.global.code.HeaderType;
 import com.worktalkie.src.global.code.HeaderValue;
 import com.worktalkie.src.global.error.BaseException;
 import com.worktalkie.src.global.error.ErrorCode;
+import com.worktalkie.src.member.entity.Member;
+import com.worktalkie.src.member.repository.MemberRepository;
 import com.worktalkie.src.scenario.service.ScenarioService;
 import com.worktalkie.src.scenario.dto.ScenarioResponseDto;
 import com.worktalkie.src.scenario.entity.Mission;
@@ -40,6 +42,7 @@ public class ConversationService {
     private final ConversationRepository conversationRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
+    private final MemberRepository memberRepository;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -49,6 +52,9 @@ public class ConversationService {
     // dialog 없음
     @Transactional
     public ConversationResponseDto.StartDto startConversation(final ConversationRequestDto.CreateDto input) {
+        // 사용자 확인
+        Member member = memberRepository.findById(input.getMemberId()).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+
         // 시나리오 호출
         Scenario scenario = scenarioService.getScenarioById(input.getScenarioId());
         List<Mission> missions = scenarioService.getMissionsByScenarioId(scenario.getId());
@@ -69,7 +75,7 @@ public class ConversationService {
             throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
 
-        ChatRoom chatRoom = ChatRoom.of(input.getUserId(), scenario);
+        ChatRoom chatRoom = ChatRoom.of(member, scenario);
         conversationRepository.save(chatRoom);
         String chatRoomId = chatRoom.getId();
 

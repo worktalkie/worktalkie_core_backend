@@ -9,7 +9,7 @@ public class ConversationRequestDto {
     @Builder
     public static class CreateDto {
         private String scenarioId;
-        private String userId;
+        private String memberId;
     }
 
     @Getter
