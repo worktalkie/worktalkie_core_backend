@@ -2,9 +2,7 @@ package com.worktalkie.src.scenario;
 
 import com.worktalkie.src.scenario.dto.ScenarioResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,5 +17,9 @@ public class ScenarioController {
         return scenarioService.getScenarios();
     }
 
+    @GetMapping("/{scenarioId}")
+    public ScenarioResponseDto.GetByIdDto getScenarioById(@PathVariable String scenarioId) {
+        return scenarioService.getScenarioDtoById(scenarioId);
+    }
 
 }

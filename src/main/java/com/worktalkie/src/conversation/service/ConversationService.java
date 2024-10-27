@@ -46,6 +46,7 @@ public class ConversationService {
     @Value("${ml-server.url}")
     private String ML_SERVER;
 
+    // dialog 없음
     @Transactional
     public ConversationResponseDto.StartDto startConversation(final ConversationRequestDto.CreateDto input) {
         // 시나리오 호출
