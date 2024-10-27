@@ -20,13 +20,13 @@ import static lombok.AccessLevel.PROTECTED;
 public class BaseEntity {
 
     @CreatedDate
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
 
-    @Column(name = "deleted_at")
+    @Column(name = "deleted_at", nullable = false)
     private Timestamp deletedAt;
 }
