@@ -16,13 +16,17 @@ import java.util.List;
 public class Scenario extends BaseEntity {
 
     @Id
-    private String id;
+    private Long id;
     private String title;
     private String descriptions;
     private String backgrounds;
     private String roleOfAi;
+
+    @Setter
     @OneToMany(mappedBy = "scenario")
     private List<Mission> missions;
     private String tips;
     private int estimatedTime;
+
+
 }

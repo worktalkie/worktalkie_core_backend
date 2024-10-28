@@ -12,7 +12,7 @@ import lombok.*;
 public class Mission extends BaseEntity {
 
     @Id
-    private String id;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scenario_id")
     private Scenario scenario;

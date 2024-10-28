@@ -8,7 +8,7 @@ public class ConversationRequestDto {
     @Getter
     @Builder
     public static class CreateDto {
-        private String scenarioId;
+        private Long scenarioId;
         private String memberId;
     }
 

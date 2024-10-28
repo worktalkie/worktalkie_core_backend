@@ -30,4 +30,16 @@ public class ScenarioResponseDto {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    public static class CreateDto {
+        private String title;
+        private String descriptions;
+        private String backgrounds;
+        private String roleOfAi;
+        private List<String> missions;
+        private String tips;
+        private int estimatedTime;
+    }
 }
