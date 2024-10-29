@@ -10,6 +10,8 @@ import com.worktalkie.src.scenario.entity.Scenario;
 import com.worktalkie.src.scenario.repository.MissionRepository;
 import com.worktalkie.src.scenario.repository.ScenarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,5 +106,13 @@ public class ScenarioService {
         scenarioRepository.deleteById(scenarioId);
         missionRepository.findByScenarioIdAndDeletedAtIsNull(scenarioId)
                 .forEach(BaseEntity::softDelete);
+    }
+
+    public List<ScenarioResponseDto.RecommendDto> getRecommendScenarios(int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        List<Scenario> scenarios = scenarioRepository.findRandomScenariosAndDeletedAtIsNull(pageable);
+        return scenarios.stream()
+                .map(ScenarioResponseDto.RecommendDto::toDto)
+                .toList();
     }
 }

@@ -42,4 +42,20 @@ public class ScenarioResponseDto {
         private String tips;
         private int estimatedTime;
     }
+
+    @Getter
+    @Builder
+    public static class RecommendDto {
+        private String title;
+        private String descriptions;
+        private int estimatedTime;
+
+        public static RecommendDto toDto(Scenario scenario) {
+            return RecommendDto.builder()
+                    .title(scenario.getTitle())
+                    .descriptions(scenario.getDescriptions())
+                    .estimatedTime(scenario.getEstimatedTime())
+                    .build();
+        }
+    }
 }

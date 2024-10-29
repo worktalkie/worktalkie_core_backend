@@ -16,13 +16,18 @@ public class ScenarioController {
     private final ScenarioService scenarioService;
 
     @GetMapping("")
-    public List<ScenarioResponseDto.GetByIdDto> getScenarios() {
-        return scenarioService.getScenarios();
+    public ResponseEntity<List<ScenarioResponseDto.GetByIdDto>> getScenarios() {
+        return ResponseEntity.ok(scenarioService.getScenarios());
     }
 
     @GetMapping("/{scenarioId}")
-    public ScenarioResponseDto.GetByIdDto getScenarioById(@PathVariable Long scenarioId) {
-        return scenarioService.getScenarioDtoById(scenarioId);
+    public ResponseEntity<ScenarioResponseDto.GetByIdDto> getScenarioById(@PathVariable Long scenarioId) {
+        return ResponseEntity.ok(scenarioService.getScenarioDtoById(scenarioId));
+    }
+
+    @GetMapping("/recommend")
+    public ResponseEntity<List<ScenarioResponseDto.RecommendDto>> getRecommendScenarios(@RequestParam int count) {
+        return ResponseEntity.ok(scenarioService.getRecommendScenarios(count));
     }
 
     @PostMapping("")
