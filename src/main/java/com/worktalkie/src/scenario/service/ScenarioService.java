@@ -1,5 +1,6 @@
 package com.worktalkie.src.scenario.service;
 
+import com.worktalkie.src.global.BaseEntity;
 import com.worktalkie.src.global.error.BaseException;
 import com.worktalkie.src.global.error.ErrorCode;
 import com.worktalkie.src.scenario.dto.MissonRequestDto;
@@ -21,9 +22,9 @@ public class ScenarioService {
     private final MissionRepository missionRepository;
 
     public ScenarioResponseDto.GetByIdDto getScenarioDtoById(Long scenarioId) {
-        Scenario scenario = scenarioRepository.findById(scenarioId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+        Scenario scenario = scenarioRepository.findByIdAndDeletedAtIsNull(scenarioId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
 
-        List<Mission> missions = missionRepository.findAllByScenarioId(scenario.getId());
+        List<Mission> missions = missionRepository.findByScenarioIdAndDeletedAtIsNull(scenario.getId());
         List<String> missionTitles = missions.stream().map(Mission::getTitle).toList();
 
         return ScenarioResponseDto.GetByIdDto.builder()
@@ -36,15 +37,15 @@ public class ScenarioService {
     }
 
     public Scenario getScenarioById(Long scenarioId) {
-        return scenarioRepository.findById(scenarioId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+        return scenarioRepository.findByIdAndDeletedAtIsNull(scenarioId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
     }
 
     public List<Mission> getMissionsByScenarioId(Long scenarioId) {
-        return missionRepository.findAllByScenarioId(scenarioId);
+        return missionRepository.findByScenarioIdAndDeletedAtIsNull(scenarioId);
     }
 
     public List<ScenarioResponseDto.GetByIdDto> getScenarios() {
-        List<Long> scenarioIds = scenarioRepository.findAll()
+        List<Long> scenarioIds = scenarioRepository.findByDeletedAtIsNull()
                 .stream()
                 .map(Scenario::getId)
                 .toList();
@@ -66,27 +67,28 @@ public class ScenarioService {
                 .estimatedTime(input.getEstimatedTime())
                 .build();
 
+        Long scenarioId = scenarioRepository.save(inputScenario).getId();
+
         // 미션을 생성한 후에 미션을 시나리오에 추가
         List<Long> missionIds = input.getMissions().stream()
                 .map(mission -> {
                     MissonRequestDto.CreateDto missionInput = MissonRequestDto.CreateDto.builder()
-                            .scenarioId(inputScenario.getId())
+                            .scenarioId(scenarioId)
                             .title(mission)
                             .build();
                     return createMission(missionInput);
                 })
                 .toList();
         List<Mission> missions = missionIds.stream()
-                .map(missionId -> missionRepository.findById(missionId)
+                .map(missionId -> missionRepository.findByIdAndDeletedAtIsNull(missionId)
                         .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND)))
                 .toList();
         inputScenario.setMissions(missions);
 
-        return scenarioRepository.save(inputScenario).getId();
+        return scenarioId;
     }
 
-    @Transactional
-    public Long createMission(MissonRequestDto.CreateDto input) {
+    private Long createMission(MissonRequestDto.CreateDto input) {
         Scenario scenario = getScenarioById(input.getScenarioId());
         Mission mission = Mission.builder()
                 .scenario(scenario)
@@ -94,5 +96,12 @@ public class ScenarioService {
                 .build();
 
         return missionRepository.save(mission).getId();
+    }
+
+    @Transactional
+    public void deleteScenario(Long scenarioId) {
+        scenarioRepository.deleteById(scenarioId);
+        missionRepository.findByScenarioIdAndDeletedAtIsNull(scenarioId)
+                .forEach(BaseEntity::softDelete);
     }
 }
