@@ -131,6 +131,7 @@ public class ConversationService {
                 .build();
     }
 
+    @Transactional
     public ConversationResponseDto.EndDto endConversation(final String chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
         Scenario scenario = chatRoom.getScenario();
