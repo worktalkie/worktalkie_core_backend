@@ -1,7 +1,7 @@
 package com.worktalkie.src.conversation.service;
 
-import com.worktalkie.src.conversation.dto.ConversationRequestDto;
-import com.worktalkie.src.conversation.dto.ConversationResponseDto;
+import com.worktalkie.src.conversation.dto.ConversationRequest;
+import com.worktalkie.src.conversation.dto.ConversationResponse;
 import com.worktalkie.src.conversation.dto.GptRequestDto;
 import com.worktalkie.src.conversation.entity.Chat;
 import com.worktalkie.src.conversation.entity.ChatRoom;
@@ -51,7 +51,7 @@ public class ConversationService {
 
     // dialog 없음
     @Transactional
-    public ConversationResponseDto.StartDto startConversation(final ConversationRequestDto.CreateDto input) {
+    public ConversationResponse.StartDto startConversation(final ConversationRequest.CreateDto input) {
         // 사용자 확인
         Member member = memberRepository.findById(input.getMemberId()).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
 
@@ -79,16 +79,16 @@ public class ConversationService {
         conversationRepository.save(chatRoom);
         String chatRoomId = chatRoom.getId();
 
-        return ConversationResponseDto.StartDto.builder()
+        return ConversationResponse.StartDto.builder()
                 .conversationId(chatRoomId)
                 .answer(mlResponse.toString())
                 .build();
     }
 
     @Transactional
-    public ConversationResponseDto.ChatDto chat(final String chatRoomId,
-                                                final ConversationRequestDto.ChatDto input,
-                                                MultipartFile audio) throws IOException {
+    public ConversationResponse.ChatDto chat(final String chatRoomId,
+                                             final ConversationRequest.ChatDto input,
+                                             MultipartFile audio) throws IOException {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
         Scenario scenario = chatRoom.getScenario();
         List<Mission> missions = scenarioService.getMissionsByScenarioId(scenario.getId());
@@ -124,7 +124,7 @@ public class ConversationService {
 
         storageService.uploadFile(chatRoomId, audio);
 
-        return ConversationResponseDto.ChatDto.builder()
+        return ConversationResponse.ChatDto.builder()
                 .message(mlResponse.toString())
                 .isAi(true)
                 .createdAt(gptChat.getCreatedAt())
@@ -132,7 +132,7 @@ public class ConversationService {
     }
 
     @Transactional
-    public ConversationResponseDto.EndDto endConversation(final String chatRoomId) {
+    public ConversationResponse.EndDto endConversation(final String chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
         Scenario scenario = chatRoom.getScenario();
         List<Mission> missions = scenarioService.getMissionsByScenarioId(scenario.getId());
@@ -152,10 +152,10 @@ public class ConversationService {
             throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
 
-        return new ConversationResponseDto.EndDto();
+        return new ConversationResponse.EndDto();
     }
 
-    public List<ConversationResponseDto.HistoryDto> getChatHistory(final String chatRoomId) {
+    public List<ConversationResponse.HistoryDto> getChatHistory(final String chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
         List<Chat> chats = chatRepository.findByChatRoom(chatRoom);
 

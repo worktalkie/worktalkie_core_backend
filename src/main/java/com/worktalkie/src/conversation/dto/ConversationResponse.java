@@ -5,7 +5,7 @@ import lombok.Getter;
 
 import java.sql.Timestamp;
 
-public class ConversationResponseDto {
+public class ConversationResponse {
 
     @Getter
     @Builder

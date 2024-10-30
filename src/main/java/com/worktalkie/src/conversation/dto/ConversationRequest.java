@@ -3,7 +3,7 @@ package com.worktalkie.src.conversation.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-public class ConversationRequestDto {
+public class ConversationRequest {
 
     @Getter
     @Builder

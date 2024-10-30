@@ -1,5 +1,6 @@
 package com.worktalkie.src.scenario.controller;
 
+import com.worktalkie.src.global.BaseResponse;
 import com.worktalkie.src.scenario.dto.ScenarioResponseDto;
 import com.worktalkie.src.scenario.service.ScenarioService;
 import lombok.RequiredArgsConstructor;
@@ -16,18 +17,18 @@ public class ScenarioController {
     private final ScenarioService scenarioService;
 
     @GetMapping("")
-    public ResponseEntity<List<ScenarioResponseDto.GetByIdDto>> getScenarios() {
-        return ResponseEntity.ok(scenarioService.getScenarios());
+    public ResponseEntity<BaseResponse<List<ScenarioResponseDto.GetByIdDto>>> getScenarios() {
+        return ResponseEntity.ok(new BaseResponse<>(scenarioService.getScenarios()));
     }
 
     @GetMapping("/{scenarioId}")
-    public ResponseEntity<ScenarioResponseDto.GetByIdDto> getScenarioById(@PathVariable Long scenarioId) {
-        return ResponseEntity.ok(scenarioService.getScenarioDtoById(scenarioId));
+    public ResponseEntity<BaseResponse<ScenarioResponseDto.GetByIdDto>> getScenarioById(@PathVariable Long scenarioId) {
+        return ResponseEntity.ok(new BaseResponse<>(scenarioService.getScenarioDtoById(scenarioId)));
     }
 
     @GetMapping("/recommend")
-    public ResponseEntity<List<ScenarioResponseDto.RecommendDto>> getRecommendScenarios(@RequestParam int count) {
-        return ResponseEntity.ok(scenarioService.getRecommendScenarios(count));
+    public ResponseEntity<BaseResponse<List<ScenarioResponseDto.RecommendDto>>> getRecommendScenarios(@RequestParam int count) {
+        return ResponseEntity.ok(new BaseResponse<>(scenarioService.getRecommendScenarios(count)));
     }
 
     @PostMapping("")
@@ -41,5 +42,4 @@ public class ScenarioController {
         scenarioService.deleteScenario(scenarioId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 }
