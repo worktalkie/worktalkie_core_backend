@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface MagazineService {
     List<MagazineResponse.PagingMagazinesDto> getMagazines(String category, int cursor, int limit);
+
+    MagazineResponse.MagazineDetailDto getMagazineDetailById(Long magazineId);
 }

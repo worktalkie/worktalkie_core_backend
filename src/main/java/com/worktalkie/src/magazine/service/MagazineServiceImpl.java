@@ -1,5 +1,7 @@
 package com.worktalkie.src.magazine.service;
 
+import com.worktalkie.src.global.error.BaseException;
+import com.worktalkie.src.global.error.ErrorCode;
 import com.worktalkie.src.magazine.code.MagazineCategory;
 import com.worktalkie.src.magazine.dto.MagazineResponse;
 import com.worktalkie.src.magazine.entity.Magazine;
@@ -34,5 +36,12 @@ public class MagazineServiceImpl implements MagazineService {
         return magazines.stream()
                 .map(MagazineResponse.PagingMagazinesDto::toDto)
                 .toList();
+    }
+
+    @Override
+    public MagazineResponse.MagazineDetailDto getMagazineDetailById(Long magazineId) {
+        Magazine magazine = this.magazineRepository.findByIdAndDeletedAtIsNull(magazineId)
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+        return MagazineResponse.MagazineDetailDto.toDto(magazine);
     }
 }

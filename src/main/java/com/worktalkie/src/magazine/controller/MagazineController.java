@@ -5,10 +5,7 @@ import com.worktalkie.src.magazine.dto.MagazineResponse;
 import com.worktalkie.src.magazine.service.MagazineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,4 +25,18 @@ public class MagazineController {
         List<MagazineResponse.PagingMagazinesDto> magazines = magazineService.getMagazines(category, cursor, limit);
         return ResponseEntity.ok(new BaseResponse<>(magazines));
     }
+
+    @GetMapping("/{magazineId}")
+    public ResponseEntity<BaseResponse<MagazineResponse.MagazineDetailDto>> getMagazineDetailsById(@PathVariable Long magazineId) {
+        MagazineResponse.MagazineDetailDto magazine = magazineService.getMagazineDetailById(magazineId);
+        return ResponseEntity.ok(new BaseResponse<>(magazine));
+    }
+
+    @PostMapping("")
+    public ResponseEntity<BaseResponse<MagazineResponse.MagazineDetailDto>> createMagazine(@RequestBody MagazineResponse.MagazineDetailDto magazine) {
+        MagazineResponse.MagazineDetailDto createdMagazine = magazineService.createMagazine(magazine);
+        return ResponseEntity.ok(new BaseResponse<>(createdMagazine));
+    }
+
+
 }
