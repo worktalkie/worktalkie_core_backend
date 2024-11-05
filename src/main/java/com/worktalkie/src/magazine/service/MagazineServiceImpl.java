@@ -55,4 +55,9 @@ public class MagazineServiceImpl implements MagazineService {
 
         return this.magazineRepository.save(magazine).getId();
     }
+
+    @Override
+    public void deleteMagazine(Long magazineId) {
+        this.magazineRepository.deleteById(magazineId);
+    }
 }

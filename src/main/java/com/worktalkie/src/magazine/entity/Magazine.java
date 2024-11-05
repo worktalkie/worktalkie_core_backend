@@ -4,6 +4,7 @@ import com.worktalkie.src.global.BaseEntity;
 import com.worktalkie.src.magazine.code.MagazineCategory;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 
 
 @Getter
@@ -11,6 +12,7 @@ import lombok.*;
 @Entity
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE magazine SET deleted_at = NOW() WHERE id = ?")
 public class Magazine extends BaseEntity {
 
     @Id

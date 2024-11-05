@@ -39,5 +39,9 @@ public class MagazineController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>());
     }
 
-
+    @DeleteMapping("/{magazineId}")
+    public ResponseEntity<BaseResponse<Object>> deleteMagazine(@PathVariable Long magazineId) {
+        magazineService.deleteMagazine(magazineId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse<>());
+    }
 }

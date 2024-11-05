@@ -10,4 +10,6 @@ public interface MagazineService {
     MagazineResponse.MagazineDetailDto getMagazineDetailById(Long magazineId);
 
     Long createMagazine(MagazineResponse.CreateMagazineDto input);
+
+    void deleteMagazine(Long magazineId);
 }
