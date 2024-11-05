@@ -44,4 +44,15 @@ public class MagazineServiceImpl implements MagazineService {
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
         return MagazineResponse.MagazineDetailDto.toDto(magazine);
     }
+
+    @Override
+    public Long createMagazine(MagazineResponse.CreateMagazineDto input) {
+        Magazine magazine = Magazine.builder()
+                .title(input.getTitle())
+                .category(MagazineCategory.getCategory(input.getCategory()))
+                .description(input.getDescription())
+                .build();
+
+        return this.magazineRepository.save(magazine).getId();
+    }
 }

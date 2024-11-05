@@ -51,4 +51,13 @@ public class MagazineResponse {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    public static class CreateMagazineDto {
+        private String title;
+        private String category;
+        private String description;
+        private String createdBy;
+    }
 }

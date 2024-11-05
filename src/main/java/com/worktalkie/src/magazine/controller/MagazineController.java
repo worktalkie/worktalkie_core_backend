@@ -4,6 +4,7 @@ import com.worktalkie.src.global.BaseResponse;
 import com.worktalkie.src.magazine.dto.MagazineResponse;
 import com.worktalkie.src.magazine.service.MagazineService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,9 +34,9 @@ public class MagazineController {
     }
 
     @PostMapping("")
-    public ResponseEntity<BaseResponse<MagazineResponse.MagazineDetailDto>> createMagazine(@RequestBody MagazineResponse.MagazineDetailDto magazine) {
-        MagazineResponse.MagazineDetailDto createdMagazine = magazineService.createMagazine(magazine);
-        return ResponseEntity.ok(new BaseResponse<>(createdMagazine));
+    public ResponseEntity<BaseResponse<Object>> createMagazine(@RequestBody MagazineResponse.CreateMagazineDto input) {
+        magazineService.createMagazine(input);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>());
     }
 
 
