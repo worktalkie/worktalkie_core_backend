@@ -21,9 +21,8 @@ public class ConversationController {
 
     @PostMapping("")
     public ResponseEntity<BaseResponse<ConversationResponse.StartDto>> startConversation(@RequestBody ConversationRequest.CreateDto input) {
-        ConversationResponse.StartDto result = conversationService.startConversation(input);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new BaseResponse<>(result));
+        conversationService.startConversation(input);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>());
     }
 
     @PostMapping("/{chatRoomId}/chat")

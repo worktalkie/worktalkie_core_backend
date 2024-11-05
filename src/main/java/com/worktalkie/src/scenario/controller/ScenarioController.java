@@ -32,14 +32,14 @@ public class ScenarioController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> createScenario(@RequestBody ScenarioResponseDto.CreateDto input) {
+    public ResponseEntity<BaseResponse<Object>> createScenario(@RequestBody ScenarioResponseDto.CreateDto input) {
         scenarioService.createScenario(input);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse<>());
     }
 
     @DeleteMapping("/{scenarioId}")
-    public ResponseEntity<Object> deleteScenario(@PathVariable Long scenarioId) {
+    public ResponseEntity<BaseResponse<Object>> deleteScenario(@PathVariable Long scenarioId) {
         scenarioService.deleteScenario(scenarioId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse<>());
     }
 }
