@@ -1,10 +1,8 @@
 package com.worktalkie.src.magazine.entity;
 
 import com.worktalkie.src.global.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.worktalkie.src.magazine.code.MagazineCategory;
+import jakarta.persistence.*;
 import lombok.*;
 
 
@@ -19,6 +17,8 @@ public class Magazine extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Enumerated(EnumType.STRING)
+    private MagazineCategory category;
     private String description;
     // TODO: 자동으로 작성자 생성
     private String createdBy;
