@@ -1,12 +1,10 @@
 package com.worktalkie.src.global;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.Builder;
 import lombok.Getter;
 
 
 @Getter
-@Builder
 @JsonPropertyOrder({"isSuccess", "data"})
 public class BaseResponse<T> {
     private Boolean isSuccess;
