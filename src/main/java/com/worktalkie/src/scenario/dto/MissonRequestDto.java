@@ -5,10 +5,10 @@ import lombok.Getter;
 
 public class MissonRequestDto {
 
-    @Getter
-    @Builder
-    public static class CreateDto {
-        private Long scenarioId;
-        private String title;
-    }
+	@Getter
+	@Builder
+	public static class CreateDto {
+		private Long scenarioId;
+		private String title;
+	}
 }

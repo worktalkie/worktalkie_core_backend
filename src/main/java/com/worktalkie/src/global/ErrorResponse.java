@@ -2,6 +2,7 @@ package com.worktalkie.src.global;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.worktalkie.src.global.error.ErrorCode;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,13 +12,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @JsonPropertyOrder({"isSuccess", "code"})
 public class ErrorResponse {
-    private Boolean isSuccess;
-    private String code;
-    private String message;
+	private Boolean isSuccess;
+	private String code;
+	private String message;
 
-    public ErrorResponse(ErrorCode errorCode) {
-        this.isSuccess = errorCode.isSuccess();
-        this.code = errorCode.getCode();
-        this.message = errorCode.getMessage();
-    }
+	public ErrorResponse(ErrorCode errorCode) {
+		this.isSuccess = errorCode.isSuccess();
+		this.code = errorCode.getCode();
+		this.message = errorCode.getMessage();
+	}
 }
