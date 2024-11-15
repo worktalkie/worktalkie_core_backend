@@ -39,7 +39,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConversationService {
 	private final ScenarioService scenarioService;
-	private final StorageService storageService;
+	// private final StorageService storageService;
 
 	private final ConversationRepository conversationRepository;
 	private final ChatRoomRepository chatRoomRepository;
@@ -135,7 +135,7 @@ public class ConversationService {
 			.build();
 		chatRepository.save(gptChat);
 
-		storageService.uploadFile(chatRoomId, audio);
+		// storageService.uploadFile(chatRoomId, audio);
 
 		return ConversationResponse.ChatDto.builder()
 			.message(mlResponse.toString())

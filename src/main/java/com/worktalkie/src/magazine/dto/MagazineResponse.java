@@ -2,15 +2,18 @@ package com.worktalkie.src.magazine.dto;
 
 import com.worktalkie.src.magazine.entity.Magazine;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
 public class MagazineResponse {
-
 	@Getter
 	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class PagingMagazinesDto {
 		private Long id;
 		private String title;

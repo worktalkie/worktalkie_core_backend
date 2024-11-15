@@ -20,7 +20,7 @@ public class MagazineController {
 
 	@GetMapping("")
 	public ResponseEntity<BaseResponse<List<MagazineResponse.PagingMagazinesDto>>> getMagazines(
-		@RequestParam String category,
+		@RequestParam(required = false) String category,
 		@RequestParam int cursor,
 		@RequestParam int limit
 	) {
