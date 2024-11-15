@@ -169,10 +169,6 @@ class MagazineE2ETest extends IntegrationTest {
 		MagazineResponse.MagazineDetailDto magazinesDto = JsonUtils.parseResponse(result.getResponse(),
 																				  new TypeReference<>() {}
 		);
-		Assertions.assertThat(magazinesDto)
-			.hasFieldOrProperty("id")
-			.hasFieldOrProperty("title")
-			.hasFieldOrProperty("description")
-			.hasFieldOrProperty("createdBy");
+		Assertions.assertThat(magazinesDto).hasNoNullFieldsOrProperties();
 	}
 }

@@ -76,7 +76,7 @@ public class ScenarioService {
 
 		Long scenarioId = scenarioRepository.save(inputScenario).getId();
 
-		// 미션을 생성한 후에 미션을 시나리오에 추가
+		// 시나리오를 먼저 생성한 후 미션을 시나리오에 추가
 		List<Long> missionIds = input.getMissions().stream()
 			.map(mission -> {
 				MissonRequestDto.CreateDto missionInput = MissonRequestDto.CreateDto.builder()
