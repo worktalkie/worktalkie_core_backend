@@ -36,6 +36,8 @@ public class MagazineResponse {
 
 	@Getter
 	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class MagazineDetailDto {
 		private Long id;
 		private String title;
@@ -58,6 +60,8 @@ public class MagazineResponse {
 
 	@Getter
 	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class CreateMagazineDto {
 		private String title;
 		private String category;

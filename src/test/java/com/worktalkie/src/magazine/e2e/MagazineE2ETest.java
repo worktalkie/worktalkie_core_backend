@@ -10,7 +10,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.worktalkie.src.base.IntegrationTest;
@@ -20,6 +22,7 @@ import com.worktalkie.src.magazine.entity.Magazine;
 import com.worktalkie.src.magazine.repository.MagazineRepository;
 import com.worktalkie.src.util.JsonUtils;
 
+@Transactional
 class MagazineE2ETest extends IntegrationTest {
 
 	@Autowired
@@ -30,7 +33,6 @@ class MagazineE2ETest extends IntegrationTest {
 	void 매거진_목록_조회_테스트() throws Exception {
 		// given
 		Magazine magazine1 = Magazine.builder()
-			.id(1L)
 			.title("매거진1")
 			.description("좋은 매거진이다")
 			.category(MagazineCategory.IT)
@@ -38,7 +40,6 @@ class MagazineE2ETest extends IntegrationTest {
 			.build();
 
 		Magazine magazine2 = Magazine.builder()
-			.id(2L)
 			.title("매거진2")
 			.description("좋은 매거진이다")
 			.category(MagazineCategory.ETC)
@@ -46,7 +47,6 @@ class MagazineE2ETest extends IntegrationTest {
 			.build();
 
 		Magazine magazine3 = Magazine.builder()
-			.id(3L)
 			.title("매거진3")
 			.description("좋은 매거진이다11")
 			.category(MagazineCategory.ALL)
@@ -80,7 +80,6 @@ class MagazineE2ETest extends IntegrationTest {
 	void IT_카테고리_매거진_목록_조회_테스트() throws Exception {
 		// given
 		Magazine magazine1 = Magazine.builder()
-			.id(1L)
 			.title("매거진1")
 			.description("좋은 매거진이다")
 			.category(MagazineCategory.IT)
@@ -88,7 +87,6 @@ class MagazineE2ETest extends IntegrationTest {
 			.build();
 
 		Magazine magazine2 = Magazine.builder()
-			.id(2L)
 			.title("매거진2")
 			.description("좋은 매거진이다")
 			.category(MagazineCategory.ETC)
@@ -96,7 +94,6 @@ class MagazineE2ETest extends IntegrationTest {
 			.build();
 
 		Magazine magazine3 = Magazine.builder()
-			.id(3L)
 			.title("매거진3")
 			.description("좋은 매거진이다11")
 			.category(MagazineCategory.ALL)
@@ -104,7 +101,6 @@ class MagazineE2ETest extends IntegrationTest {
 			.build();
 
 		Magazine magazine4 = Magazine.builder()
-			.id(4L)
 			.title("매거진4")
 			.description("좋은 매거진이다_ITIT")
 			.category(MagazineCategory.IT)
@@ -116,8 +112,10 @@ class MagazineE2ETest extends IntegrationTest {
 		// when
 		int cursor = 0;
 		int limit = 3;
-		final MvcResult result = mockMvc.perform(get(
-				"/api/magazines?" + "category=" + MagazineCategory.IT + "&cursor=" + cursor + "&limit=" + limit))
+		final MvcResult result = mockMvc.perform(
+				get(
+					"/api/magazines?" + "category=" + MagazineCategory.IT + "&cursor=" + cursor + "&limit=" + limit)
+					.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andReturn();
@@ -128,10 +126,53 @@ class MagazineE2ETest extends IntegrationTest {
 			new TypeReference<>() {}
 		);
 
-		Assertions.assertThat(magazinesDtos)
-			.hasSize(2)
-			.extracting(MagazineResponse.PagingMagazinesDto::getId)
-			.containsExactly(1L, 4L);
+		Assertions.assertThat(magazinesDtos).hasSize(2);
 	}
 
+	@DisplayName("id 값을 통해 매거진을 상세 조회한다")
+	@Test
+	void 매거진_상세_조회_테스트() throws Exception {
+		// given
+		Magazine magazine1 = Magazine.builder()
+			.title("매거진1")
+			.description("좋은 매거진이다")
+			.category(MagazineCategory.IT)
+			.createdBy("매니정")
+			.build();
+
+		Magazine magazine2 = Magazine.builder()
+			.title("매거진2")
+			.description("좋은 매거진이다")
+			.category(MagazineCategory.ETC)
+			.createdBy("매니저")
+			.build();
+
+		Magazine magazine3 = Magazine.builder()
+			.title("매거진3")
+			.description("좋은 매거진이다11")
+			.category(MagazineCategory.ALL)
+			.createdBy("매니정")
+			.build();
+
+		magazineRepository.saveAll(List.of(magazine1, magazine2, magazine3));
+
+		// when
+		long id = 8L;
+		final MvcResult result = mockMvc.perform(
+				get("/api/magazines/" + id)
+					.contentType(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andReturn();
+
+		// then
+		MagazineResponse.MagazineDetailDto magazinesDto = JsonUtils.parseResponse(result.getResponse(),
+																				  new TypeReference<>() {}
+		);
+		Assertions.assertThat(magazinesDto)
+			.hasFieldOrProperty("id")
+			.hasFieldOrProperty("title")
+			.hasFieldOrProperty("description")
+			.hasFieldOrProperty("createdBy");
+	}
 }

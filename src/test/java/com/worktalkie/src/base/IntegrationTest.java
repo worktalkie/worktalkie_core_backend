@@ -7,7 +7,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.worktalkie.src.magazine.repository.MagazineRepository;
 
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
